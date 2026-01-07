@@ -1,0 +1,12 @@
+// Dashboard Components
+export { default as DashboardHeader } from './DashboardHeader.vue'
+export { default as DashboardStatusAlert } from './DashboardStatusAlert.vue'
+export { default as DashboardStatsCards } from './DashboardStatsCards.vue'
+export { default as DashboardQuickActions } from './DashboardQuickActions.vue'
+export { default as DashboardRecentOrders } from './DashboardRecentOrders.vue'
+export { default as DashboardTopProducts } from './DashboardTopProducts.vue'
+export { default as DashboardPerformance } from './DashboardPerformance.vue'
+export { default as DashboardTipsCard } from './DashboardTipsCard.vue'
+export { default as DashboardProductCategories } from './DashboardProductCategories.vue'
+export { default as DashboardHealthWidget } from './DashboardHealthWidget.vue'
+export { default as DashboardQueueWidget } from './DashboardQueueWidget.vue'

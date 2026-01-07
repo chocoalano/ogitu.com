@@ -1,0 +1,5 @@
+export { default as CustomerStatsCards } from './CustomerStatsCards.vue'
+export { default as CustomerFiltersBar } from './CustomerFiltersBar.vue'
+export { default as CustomerTable } from './CustomerTable.vue'
+export { default as CustomerDeleteModal } from './CustomerDeleteModal.vue'
+export * from './types'
