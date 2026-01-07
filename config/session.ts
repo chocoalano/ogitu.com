@@ -2,6 +2,13 @@ import env from '#start/env'
 import app from '@adonisjs/core/services/app'
 import { defineConfig, stores } from '@adonisjs/session'
 
+/**
+ * Determine if cookies should be secure.
+ * Uses COOKIE_SECURE env var if set, otherwise defaults to inProduction.
+ * Set COOKIE_SECURE=false if running production without HTTPS (not recommended).
+ */
+const isSecureCookie = env.get('COOKIE_SECURE') ?? app.inProduction
+
 const sessionConfig = defineConfig({
   enabled: true,
   cookieName: 'adonis-session',
@@ -25,7 +32,7 @@ const sessionConfig = defineConfig({
   cookie: {
     path: '/',
     httpOnly: true,
-    secure: app.inProduction,
+    secure: isSecureCookie,
     sameSite: 'lax',
   },
 

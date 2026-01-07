@@ -1,6 +1,7 @@
 import env from '#start/env';
 import app from '@adonisjs/core/services/app';
 import { defineConfig, stores } from '@adonisjs/session';
+const isSecureCookie = env.get('COOKIE_SECURE') ?? app.inProduction;
 const sessionConfig = defineConfig({
     enabled: true,
     cookieName: 'adonis-session',
@@ -9,7 +10,7 @@ const sessionConfig = defineConfig({
     cookie: {
         path: '/',
         httpOnly: true,
-        secure: app.inProduction,
+        secure: isSecureCookie,
         sameSite: 'lax',
     },
     store: env.get('SESSION_DRIVER'),
