@@ -1,4 +1,12 @@
+import env from '#start/env'
+import app from '@adonisjs/core/services/app'
 import { defineConfig } from '@adonisjs/shield'
+
+/**
+ * Determine if cookies should be secure.
+ * Uses COOKIE_SECURE env var if set, otherwise defaults to inProduction.
+ */
+const isSecureCookie = env.get('COOKIE_SECURE') ?? app.inProduction
 
 const shieldConfig = defineConfig({
   /**
@@ -20,6 +28,12 @@ const shieldConfig = defineConfig({
     exceptRoutes: ['/webhooks/midtrans'],
     enableXsrfCookie: true,
     methods: ['POST', 'PUT', 'PATCH', 'DELETE'],
+    cookieOptions: {
+      httpOnly: false,
+      secure: isSecureCookie,
+      sameSite: 'lax',
+      path: '/',
+    },
   },
 
   /**
