@@ -6,10 +6,10 @@ import type {
   ProductImage,
   BreadcrumbItem,
   CategoryBreadcrumb,
-} from '~/types/product_detail'
-import { useCart } from '~/composables/use_cart'
-import { useWishlist } from '~/composables/use_wishlist'
-import { useToast } from '~/composables/use_toast'
+} from '../types/product_detail.js'
+import { useCart } from './use_cart.js'
+import { useWishlist } from './use_wishlist.js'
+import { useToast } from './use_toast.js'
 
 export function useProductDetail(
   product: ProductDetail,
@@ -83,7 +83,7 @@ export function useProductDetail(
   // Computed - Variants
   const variantGroups = computed(() => {
     const groups: Record<string, ProductVariant[]> = {}
-    product.variants.forEach((variant) => {
+    product.variants.forEach((variant: ProductVariant) => {
       if (!groups[variant.name]) {
         groups[variant.name] = []
       }
@@ -207,9 +207,9 @@ export function useProductDetail(
   }
 
   const shareProduct = async (url: string) => {
-    if (navigator.share) {
+    if (typeof globalThis.navigator !== 'undefined' && 'share' in globalThis.navigator) {
       try {
-        await navigator.share({
+        await (globalThis.navigator as Navigator).share({
           title: product.name,
           text: `Check out ${product.name} at Ogitu!`,
           url,
@@ -221,8 +221,10 @@ export function useProductDetail(
     } else {
       // Fallback: copy to clipboard
       try {
-        await navigator.clipboard.writeText(url)
-        toast.success('Link produk berhasil disalin')
+        if (typeof globalThis.navigator !== 'undefined' && globalThis.navigator.clipboard) {
+          await globalThis.navigator.clipboard.writeText(url)
+          toast.success('Link produk berhasil disalin')
+        }
       } catch {
         toast.error('Gagal menyalin link')
       }

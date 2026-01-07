@@ -136,14 +136,14 @@ export default class CheckoutsController {
    * Get shipping costs (API)
    */
   public async getShippingCosts({ request, response }: HttpContext) {
-    try {
-      const { origin, destination, weight, courier } = request.only([
-        'origin',
-        'destination',
-        'weight',
-        'courier',
-      ])
+    const { origin, destination, weight, courier } = request.only([
+      'origin',
+      'destination',
+      'weight',
+      'courier',
+    ])
 
+    try {
       if (!origin || !destination || !weight || !courier) {
         return response.status(400).json({
           success: false,
@@ -182,14 +182,14 @@ export default class CheckoutsController {
    */
   public async processCheckout({ auth, request, response }: HttpContext) {
     const trx = await db.transaction()
+    const { addressId, shippingOption, notes } = request.only([
+      'addressId',
+      'shippingOption', // { courierCode, courierService, cost, courierName, serviceDescription, etd }
+      'notes',
+    ])
 
     try {
       const customer = auth.use('customer').user!
-      const { addressId, shippingOption, notes } = request.only([
-        'addressId',
-        'shippingOption', // { courierCode, courierService, cost, courierName, serviceDescription, etd }
-        'notes',
-      ])
 
       // Validate address
       const address = await Address.query()
@@ -433,13 +433,9 @@ export default class CheckoutsController {
         data: cities,
       })
     } catch (error) {
-      await BugReportService.logGuestError(
-        { request },
-        'CheckoutsController',
-        'getCities',
-        error,
-        { provinceId: request.input('provinceId') }
-      )
+      await BugReportService.logGuestError({ request }, 'CheckoutsController', 'getCities', error, {
+        provinceId: request.input('provinceId'),
+      })
       return response.status(500).json({
         success: false,
         message: 'Gagal mendapatkan data kota',

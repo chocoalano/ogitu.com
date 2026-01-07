@@ -1,7 +1,7 @@
 import { ref, computed, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { useDebounceFn } from '@vueuse/core'
-import type { CategoryInfo } from '~/types/article'
+import type { CategoryInfo } from '../types/article.js'
 
 export interface ArticleFilters {
   category: string | null

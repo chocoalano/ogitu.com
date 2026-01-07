@@ -9,4 +9,4 @@ export { default as InventoryPagination } from './InventoryPagination.vue'
 export { default as InventoryUnsavedWarning } from './InventoryUnsavedWarning.vue'
 
 // Types and Helpers
-export * from './types'
+export * from './types.js'

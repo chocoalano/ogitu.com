@@ -3,7 +3,7 @@
  * Handles profile edit logic and data formatting
  */
 import { ref, computed, type Ref } from 'vue'
-import type { ProfileCustomer, ProfileFormData } from '~/components/profile/types'
+import type { ProfileCustomer, ProfileFormData } from '../components/profile/types.js'
 
 interface UseProfileConfig {
   customer: ProfileCustomer
@@ -25,7 +25,7 @@ export function useProfile({ customer }: UseProfileConfig) {
   const initials = computed(() => {
     return customer.fullName
       .split(' ')
-      .map((n) => n[0])
+      .map((n: string) => n[0])
       .join('')
       .toUpperCase()
       .slice(0, 2)
@@ -95,11 +95,11 @@ export function useProfile({ customer }: UseProfileConfig) {
         body: JSON.stringify(form.value),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as { success: boolean; message?: string }
 
       if (data.success) {
         isEditing.value = false
-        window.location.reload()
+        globalThis.window?.location?.reload()
         return true
       } else {
         error.value = data.message || 'Gagal menyimpan profil'

@@ -1,6 +1,6 @@
 import { computed, type ComputedRef } from 'vue'
 import { useSeoMeta, useHead } from '@unhead/vue'
-import type { ProductDetail, ProductImage, BreadcrumbItem } from '~/types/product_detail'
+import type { ProductDetail, ProductImage, BreadcrumbItem } from '../types/product_detail.js'
 
 interface UseProductSeoOptions {
   product: ProductDetail

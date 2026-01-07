@@ -3,7 +3,7 @@
  */
 
 // Types
-export * from './types'
+export * from './types.js'
 
 // Components
 export { default as ProfileBreadcrumb } from './ProfileBreadcrumb.vue'

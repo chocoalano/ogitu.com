@@ -1,6 +1,6 @@
 import { ref, computed, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
-import type { CollectionFilters, SortOption } from '~/types/product'
+import type { CollectionFilters, SortOption } from '../types/product.js'
 
 export const SORT_OPTIONS: SortOption[] = [
   { label: 'Terbaru', value: 'newest' },

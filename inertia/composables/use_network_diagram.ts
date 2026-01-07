@@ -41,7 +41,7 @@ export interface NetworkStats {
 }
 
 export function useNetworkDiagram(
-  containerRef: Ref<HTMLDivElement | null>,
+  containerRef: Ref<HTMLElement | null>,
   networkStats: Ref<NetworkStats>,
   networkTree?: Ref<NetworkTreeData | null | undefined>
 ) {
@@ -62,7 +62,7 @@ export function useNetworkDiagram(
     }
 
     // Check if we're in browser environment
-    if (typeof window === 'undefined') {
+    if (typeof globalThis.window === 'undefined') {
       console.warn('Network diagram: Not in browser environment')
       return
     }

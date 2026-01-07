@@ -1,4 +1,4 @@
-import type { ContentBlock } from '@/types/article'
+import type { ContentBlock } from './article.js'
 
 // Admin Article Types
 

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
-import type { Order, StatusOption, OrderPagination } from '~/types/order'
+import type { Order, StatusOption, OrderPagination } from '../types/order.js'
 
 export interface UseOrdersOptions {
   orders: Order[]
@@ -163,6 +163,18 @@ export function useOrderActions() {
   const isProcessing = ref(false)
   const error = ref<string | null>(null)
 
+  // API response type
+  interface OrderApiResponse {
+    success: boolean
+    message?: string
+    data?: {
+      snapToken?: string
+      redirectUrl?: string
+      orderStatus?: string
+      paymentStatus?: string
+    }
+  }
+
   const getXsrfToken = (): string | null => {
     if (typeof document === 'undefined') return null
     const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
@@ -184,13 +196,13 @@ export function useOrderActions() {
         credentials: 'include',
       })
 
-      const result = await response.json()
+      const result = (await response.json()) as OrderApiResponse
 
       if (!result.success) {
         error.value = result.message || 'Gagal membatalkan pesanan'
       }
 
-      return result
+      return { success: result.success, message: result.message || '' }
     } catch (err) {
       error.value = 'Terjadi kesalahan jaringan'
       return { success: false, message: error.value }
@@ -216,13 +228,13 @@ export function useOrderActions() {
         credentials: 'include',
       })
 
-      const result = await response.json()
+      const result = (await response.json()) as OrderApiResponse
 
       if (!result.success) {
         error.value = result.message || 'Gagal konfirmasi pesanan'
       }
 
-      return result
+      return { success: result.success, message: result.message || '' }
     } catch (err) {
       error.value = 'Terjadi kesalahan jaringan'
       return { success: false, message: error.value }
@@ -251,7 +263,7 @@ export function useOrderActions() {
         credentials: 'include',
       })
 
-      const result = await response.json()
+      const result = (await response.json()) as OrderApiResponse
 
       if (!result.success) {
         error.value = result.message || 'Gagal memproses pembayaran'
@@ -261,8 +273,8 @@ export function useOrderActions() {
       return {
         success: true,
         message: 'Token pembayaran berhasil dibuat',
-        snapToken: result.data.snapToken,
-        redirectUrl: result.data.redirectUrl,
+        snapToken: result.data?.snapToken,
+        redirectUrl: result.data?.redirectUrl,
       }
     } catch (err) {
       error.value = 'Terjadi kesalahan jaringan'
@@ -298,7 +310,7 @@ export function useOrderActions() {
         body: JSON.stringify({ transactionStatus, transactionId }),
       })
 
-      const result = await response.json()
+      const result = (await response.json()) as OrderApiResponse
 
       if (!result.success) {
         return { success: false, message: result.message || 'Gagal memverifikasi pembayaran' }
@@ -306,7 +318,7 @@ export function useOrderActions() {
 
       return {
         success: true,
-        message: result.message,
+        message: result.message || '',
         orderStatus: result.data?.orderStatus,
         paymentStatus: result.data?.paymentStatus,
       }

@@ -40,7 +40,7 @@ export function useMidtrans() {
    * Check if Midtrans Snap is loaded
    */
   const isSnapLoaded = (): boolean => {
-    return typeof window !== 'undefined' && window.snap !== undefined
+    return typeof globalThis.window !== 'undefined' && (globalThis.window as typeof window).snap !== undefined
   }
 
   /**
@@ -67,28 +67,28 @@ export function useMidtrans() {
       paymentError.value = null
       paymentResult.value = null
 
-      window.snap.pay(snapToken, {
-        onSuccess: (result) => {
+      ;(globalThis.window as typeof window).snap.pay(snapToken, {
+        onSuccess: (result: MidtransResult) => {
           console.log('Payment success:', result)
           paymentResult.value = result
           isPaymentOpen.value = false
           options?.onSuccess?.(result)
           resolve({ success: true, result })
         },
-        onPending: (result) => {
+        onPending: (result: MidtransResult) => {
           console.log('Payment pending:', result)
           paymentResult.value = result
           isPaymentOpen.value = false
           options?.onPending?.(result)
           resolve({ success: true, result })
         },
-        onError: (result) => {
+        onError: (result: MidtransResult) => {
           console.error('Payment error:', result)
           paymentResult.value = result
           paymentError.value = result.status_message || 'Pembayaran gagal'
           isPaymentOpen.value = false
           options?.onError?.(result)
-          resolve({ success: false, result, error: paymentError.value })
+          resolve({ success: false, result, error: paymentError.value ?? undefined })
         },
         onClose: () => {
           console.log('Payment popup closed')

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useToast } from '~/composables/use_toast'
-import type { User, UsersData, UserFilters } from '~/components/admin/users/types'
+import { useToast } from './use_toast.js'
+import type { User, UsersData, UserFilters } from '../components/admin/users/types.js'
 
 export interface UseUsersOptions {
   initialData: UsersData

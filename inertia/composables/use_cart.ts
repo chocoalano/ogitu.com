@@ -58,7 +58,7 @@ export function useCart() {
       })
 
       if (response.ok) {
-        const data: ApiResponse<{ items: CartItemData[] }> = await response.json()
+        const data = (await response.json()) as ApiResponse<{ items: CartItemData[] }>
         cartItems.value = data.data?.items || []
         cartCount.value = cartItems.value.length
       }
@@ -83,7 +83,7 @@ export function useCart() {
         body: JSON.stringify(item),
       })
 
-      const data: ApiResponse = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.status === 401) {
         const currentPath = globalThis.window?.location?.pathname || '/'
@@ -120,7 +120,7 @@ export function useCart() {
         body: JSON.stringify({ quantity }),
       })
 
-      const data: ApiResponse = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         await fetchCartItems()
@@ -149,7 +149,7 @@ export function useCart() {
         credentials: 'include',
       })
 
-      const data: ApiResponse = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         await fetchCartItems()
@@ -174,7 +174,7 @@ export function useCart() {
       })
 
       if (response.ok) {
-        const data: ApiResponse<{ count: number }> = await response.json()
+        const data = (await response.json()) as ApiResponse<{ count: number }>
         cartCount.value = data.data?.count || 0
       }
     } catch {
@@ -196,7 +196,7 @@ export function useCart() {
         body: JSON.stringify({ checked }),
       })
 
-      const data: ApiResponse = await response.json()
+      const data = (await response.json()) as ApiResponse
       return data
     } catch (error) {
       console.error('Update cart item checked error:', error)

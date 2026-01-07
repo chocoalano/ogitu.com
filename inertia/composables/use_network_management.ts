@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useToast } from '~/composables/use_toast'
-import { getXsrfToken } from '~/components/admin/types'
+import { useToast } from './use_toast.js'
+import { getXsrfToken } from '../components/admin/types.js'
 import type {
   Affiliate,
   ReferredCustomersData,
@@ -11,7 +11,19 @@ import type {
   AffiliatedCustomersData,
   AffiliatedCustomerWithoutCode,
   CustomerSearchResult,
-} from '~/components/admin/network/types'
+} from '../components/admin/network/types.js'
+
+// API Response types
+interface ApiResponse<T = unknown> {
+  success?: boolean
+  error?: string
+  message?: string
+  data?: T
+  tree?: TreeData
+  stats?: NetworkStats
+  customers?: NewAffiliateCustomer[] | CustomerSearchResult[]
+  withoutReferralCode?: AffiliatedCustomerWithoutCode[]
+}
 
 export function useNetworkManagement() {
   const toast = useToast()
@@ -69,10 +81,10 @@ export function useNetworkManagement() {
 
     try {
       const response = await fetch(`/admin/network/${affiliate.id}/referred-customers`)
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse & ReferredCustomersData
 
       if (response.ok) {
-        referredCustomers.value = data
+        referredCustomers.value = data as ReferredCustomersData
       } else {
         toast.error(data.error || 'Gagal memuat data referral')
       }
@@ -91,11 +103,11 @@ export function useNetworkManagement() {
 
     try {
       const response = await fetch(`/admin/network/${affiliate.id}/tree`)
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
-        networkTree.value = data.tree
-        networkStats.value = data.stats
+        networkTree.value = data.tree ?? null
+        networkStats.value = data.stats ?? null
       } else {
         toast.error(data.error || 'Gagal memuat tree network')
       }
@@ -127,7 +139,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Customer berhasil ditempatkan')
@@ -163,7 +175,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Customers berhasil ditempatkan')
@@ -182,7 +194,7 @@ export function useNetworkManagement() {
 
   // Remove from tree
   const removeFromTree = async (referralId: number) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus member ini dari tree?')) return
+    if (!globalThis.confirm('Apakah Anda yakin ingin menghapus member ini dari tree?')) return
 
     try {
       const response = await fetch(`/admin/network/referral/${referralId}`, {
@@ -193,7 +205,7 @@ export function useNetworkManagement() {
         },
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Member berhasil dihapus dari tree')
@@ -221,10 +233,10 @@ export function useNetworkManagement() {
       const response = await fetch(
         `/admin/network/customers-without-affiliate?search=${encodeURIComponent(newAffiliateSearch.value)}`
       )
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
-        newAffiliateCustomers.value = data.customers
+        newAffiliateCustomers.value = (data.customers as NewAffiliateCustomer[]) ?? []
       }
     } catch (error) {
       console.error('Failed to search customers', error)
@@ -255,7 +267,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Akun affiliate berhasil dibuat')
@@ -288,7 +300,7 @@ export function useNetworkManagement() {
     if (selectedCustomers.value.length === referredCustomers.value.unplacedCustomers.length) {
       selectedCustomers.value = []
     } else {
-      selectedCustomers.value = referredCustomers.value.unplacedCustomers.map((c) => c.id)
+      selectedCustomers.value = referredCustomers.value.unplacedCustomers.map((c: { id: number }) => c.id)
     }
   }
 
@@ -309,10 +321,10 @@ export function useNetworkManagement() {
 
     try {
       const response = await fetch(`/admin/network/${affiliate.id}/affiliated-customers`)
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse & AffiliatedCustomersData
 
       if (response.ok) {
-        affiliatedCustomersData.value = data
+        affiliatedCustomersData.value = data as AffiliatedCustomersData
       } else {
         toast.error(data.error || 'Gagal memuat data customers terafiliasi')
       }
@@ -343,7 +355,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Kode referral berhasil dibuat')
@@ -378,7 +390,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Kode referral berhasil dibuat')
@@ -415,7 +427,7 @@ export function useNetworkManagement() {
       selectedCustomersForReferral.value = []
     } else {
       selectedCustomersForReferral.value = affiliatedCustomersData.value.withoutReferralCode.map(
-        (c) => c.id
+        (c: { id: number }) => c.id
       )
     }
   }
@@ -441,10 +453,10 @@ export function useNetworkManagement() {
       const response = await fetch(
         `/admin/network/${selectedAffiliate.value.id}/search-customers?search=${encodeURIComponent(addMemberSearch.value)}`
       )
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
-        addMemberCustomers.value = data.customers
+        addMemberCustomers.value = (data.customers as CustomerSearchResult[]) ?? []
       }
     } catch (error) {
       console.error('Failed to search customers', error)
@@ -474,7 +486,7 @@ export function useNetworkManagement() {
         }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (response.ok) {
         toast.success(data.message || 'Member berhasil ditambahkan ke tree')

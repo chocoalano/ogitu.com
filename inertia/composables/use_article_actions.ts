@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { useShare } from '@vueuse/core'
-import { useToast } from '~/composables/use_toast'
+import { useToast } from './use_toast.js'
 
 export interface SocialShareUrls {
   facebook: string
@@ -52,7 +52,7 @@ export function useArticleActions(options: UseArticleActionsOptions) {
         await share({
           title,
           text: excerpt || title,
-          url: window.location.href,
+          url: typeof globalThis.window !== 'undefined' ? globalThis.window.location.href : articleUrl.value,
         })
       } catch {
         // User cancelled or error - silently ignore
@@ -64,8 +64,11 @@ export function useArticleActions(options: UseArticleActionsOptions) {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href)
-      toast.success('Link Disalin', 'Link artikel berhasil disalin ke clipboard')
+      const url = typeof globalThis.window !== 'undefined' ? globalThis.window.location.href : articleUrl.value
+      if (typeof globalThis.navigator !== 'undefined' && globalThis.navigator.clipboard) {
+        await globalThis.navigator.clipboard.writeText(url)
+        toast.success('Link Disalin', 'Link artikel berhasil disalin ke clipboard')
+      }
     } catch {
       toast.error('Gagal', 'Tidak dapat menyalin link')
     }

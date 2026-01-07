@@ -11,13 +11,13 @@ export function useColorMode() {
 }
 
 // Auto-import stubs for Nuxt UI
-export const ref = (value: any) => ({ value })
-export const computed = (fn: any) => ({ value: fn() })
-export const onMounted = (fn: any) => {}
-export const watch = (source: any, cb: any) => {}
+export const ref = (value: unknown) => ({ value })
+export const computed = (fn: () => unknown) => ({ value: fn() })
+export const onMounted = (_fn: () => void) => {}
+export const watch = (_source: unknown, _cb: () => void) => {}
 
 export default {
-  install(app: App) {
+  install(_app: App) {
     // Initialize Nuxt UI components globally if needed
   },
 }

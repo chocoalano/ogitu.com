@@ -1,4 +1,4 @@
-export * from './types'
+export * from './types.js'
 export { default as NetworkStatsCards } from './NetworkStatsCards.vue'
 export { default as AffiliateList } from './AffiliateList.vue'
 export { default as ReferredCustomersList } from './ReferredCustomersList.vue'

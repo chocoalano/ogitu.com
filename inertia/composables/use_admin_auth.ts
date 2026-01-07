@@ -1,5 +1,5 @@
 import { ref, computed, onUnmounted } from 'vue'
-import { useToast } from './use_toast'
+import { useToast } from './use_toast.js'
 
 export interface AdminAuthConfig {
   /** Base path for auth endpoints */
@@ -88,10 +88,10 @@ export function useAdminAuth(config: AdminAuthConfig) {
         body: JSON.stringify(body),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as { success?: boolean; message?: string; redirect?: string }
       return {
         success: data.success ?? false,
-        data,
+        data: data as T,
         message: data.message,
         redirect: data.redirect,
       }
@@ -182,7 +182,7 @@ export function useAdminAuth(config: AdminAuthConfig) {
       if (result.success) {
         toast.success(result.message || 'Login berhasil!')
         setTimeout(() => {
-          window.location.href = result.redirect || defaultRedirect
+          globalThis.window?.location?.assign(result.redirect || defaultRedirect)
         }, 500)
         return true
       } else {

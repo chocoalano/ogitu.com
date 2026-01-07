@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useToast } from '~/composables/use_toast'
-import type { Customer, CustomersData, CustomerFilters } from '~/components/admin/customers/types'
+import { useToast } from './use_toast.js'
+import type { Customer, CustomersData, CustomerFilters } from '../components/admin/customers/types.js'
 
 export interface UseCustomersOptions {
   initialData: CustomersData
@@ -37,8 +37,8 @@ export function useCustomers(options: UseCustomersOptions) {
   // Computed stats
   const stats = computed(() => ({
     total: options.initialData.meta.total,
-    active: options.initialData.data.filter((c) => c.isActive).length,
-    verified: options.initialData.data.filter((c) => c.isVerified).length,
+    active: options.initialData.data.filter((c: Customer) => c.isActive).length,
+    verified: options.initialData.data.filter((c: Customer) => c.isVerified).length,
   }))
 
   // Fetch data from server

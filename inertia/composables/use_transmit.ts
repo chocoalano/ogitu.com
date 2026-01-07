@@ -7,7 +7,7 @@ let transmitInstance: Transmit | null = null
 export function getTransmitInstance() {
   if (!transmitInstance) {
     transmitInstance = new Transmit({
-      baseUrl: window.location.origin,
+      baseUrl: typeof globalThis.window !== 'undefined' ? globalThis.window.location.origin : '',
     })
   }
   return transmitInstance

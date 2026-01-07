@@ -14,4 +14,4 @@ export { default as RankDialog } from './RankDialog.vue'
 export { default as DeleteAddressDialog } from './DeleteAddressDialog.vue'
 
 // Re-export types
-export * from './types'
+export * from './types.js'

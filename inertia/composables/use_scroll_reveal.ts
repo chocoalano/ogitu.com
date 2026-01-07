@@ -5,9 +5,11 @@ export function useScrollReveal() {
   let observer: IntersectionObserver | null = null
 
   const observeElements = () => {
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+    if (typeof globalThis.IntersectionObserver === 'undefined') return
+
+    observer = new globalThis.IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        entries.forEach((entry: IntersectionObserverEntry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-in')
           }
@@ -16,9 +18,11 @@ export function useScrollReveal() {
       { threshold: 0.1 }
     )
 
-    document.querySelectorAll('.scroll-reveal').forEach((el) => {
-      observer?.observe(el)
-    })
+    if (typeof globalThis.document !== 'undefined') {
+      globalThis.document.querySelectorAll('.scroll-reveal').forEach((el: Element) => {
+        observer?.observe(el)
+      })
+    }
   }
 
   onMounted(() => {

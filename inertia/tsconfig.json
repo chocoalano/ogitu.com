@@ -5,10 +5,11 @@
     "jsx": "preserve",
     "module": "ESNext",
     "jsxImportSource": "vue",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.vue"]
+  "include": ["./**/*.ts", "./**/*.vue", "./shims-vue.d.ts"]
 }

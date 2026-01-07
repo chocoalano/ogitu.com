@@ -1,10 +1,18 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useToast } from '~/composables/use_toast'
-import type { ShippingFormData } from '~/types/admin_order'
+import { useToast } from './use_toast.js'
+import type { ShippingFormData } from '../types/admin_order.js'
+
+// API Response type
+interface ApiResponse {
+  success: boolean
+  message?: string
+  tracking?: unknown
+}
 
 // Get CSRF token
 function getToken(): string {
+  if (typeof document === 'undefined') return ''
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
   return match ? decodeURIComponent(match[1]) : ''
 }
@@ -25,13 +33,13 @@ export function useOrderActions() {
         },
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         toast.success('Berhasil', 'Pesanan sedang diproses')
         return true
       } else {
-        toast.error('Gagal', data.message)
+        toast.error('Gagal', data.message || 'Gagal memproses')
         return false
       }
     } catch (error) {
@@ -68,13 +76,13 @@ export function useOrderActions() {
         body: JSON.stringify(form),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         toast.success('Berhasil', isUpdate ? 'Data pengiriman diperbarui' : 'Pesanan telah dikirim')
         return true
       } else {
-        toast.error('Gagal', data.message)
+        toast.error('Gagal', data.message || 'Gagal menyimpan')
         return false
       }
     } catch (error) {
@@ -86,14 +94,14 @@ export function useOrderActions() {
   }
 
   // Refresh tracking
-  const refreshTracking = async (orderId: number): Promise<any | null> => {
+  const refreshTracking = async (orderId: number): Promise<unknown | null> => {
     isLoading.value = true
     try {
       const response = await fetch(`/api/admin/orders/${orderId}/track`, {
         headers: { Accept: 'application/json' },
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         toast.success('Berhasil', 'Data tracking diperbarui')
@@ -124,13 +132,13 @@ export function useOrderActions() {
         body: JSON.stringify({ reason }),
       })
 
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         toast.success('Berhasil', 'Pesanan dibatalkan')
         return true
       } else {
-        toast.error('Gagal', data.message)
+        toast.error('Gagal', data.message || 'Gagal membatalkan')
         return false
       }
     } catch (error) {
@@ -152,8 +160,10 @@ export function useOrderActions() {
 
   // Copy to clipboard
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    toast.success('Disalin', 'Teks berhasil disalin ke clipboard')
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      toast.success('Disalin', 'Teks berhasil disalin ke clipboard')
+    }
   }
 
   return {

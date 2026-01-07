@@ -1,6 +1,6 @@
 // Composable for countdown timer
 import { ref, onUnmounted } from 'vue'
-import type { Countdown } from '~/types/home'
+import type { Countdown } from '../types/home.js'
 
 export function useCountdown(initialHours = 12, initialMinutes = 34, initialSeconds = 56) {
   const countdown = ref<Countdown>({

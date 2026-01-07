@@ -45,7 +45,7 @@ export function useWishlist() {
       })
 
       if (response.ok) {
-        const data: ApiResponse<{ items: WishlistItemData[] }> = await response.json()
+        const data = (await response.json()) as ApiResponse<{ items: WishlistItemData[] }>
         wishlistItems.value = data.data?.items || []
         wishlistCount.value = wishlistItems.value.length
       }
@@ -72,7 +72,7 @@ export function useWishlist() {
         body: JSON.stringify({ productId }),
       })
 
-      const data: ApiResponse<{ isWishlisted: boolean }> = await response.json()
+      const data = (await response.json()) as ApiResponse<{ isWishlisted: boolean }>
 
       if (response.status === 401) {
         // Not authenticated - redirect to login with return URL
@@ -104,7 +104,7 @@ export function useWishlist() {
       })
 
       if (response.ok) {
-        const data: ApiResponse<{ isWishlisted: boolean }> = await response.json()
+        const data = (await response.json()) as ApiResponse<{ isWishlisted: boolean }>
         return data.data?.isWishlisted || false
       }
 
@@ -128,7 +128,7 @@ export function useWishlist() {
         credentials: 'include',
       })
 
-      const data: ApiResponse = await response.json()
+      const data = (await response.json()) as ApiResponse
 
       if (data.success) {
         await fetchWishlistItems()
@@ -153,7 +153,7 @@ export function useWishlist() {
       })
 
       if (response.ok) {
-        const data: ApiResponse<{ count: number }> = await response.json()
+        const data = (await response.json()) as ApiResponse<{ count: number }>
         wishlistCount.value = data.data?.count || 0
       }
     } catch {

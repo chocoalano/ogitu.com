@@ -4,7 +4,7 @@ import type {
   AdminNotification,
   NotificationMeta,
   NotificationFilters,
-} from '~/types/admin_notification'
+} from '../types/admin_notification.js'
 
 export interface UseNotificationsOptions {
   initialNotifications?: AdminNotification[]
@@ -30,7 +30,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
   })
 
   const hasReadNotifications = computed(() => {
-    return notifications.value.some((n) => n.isRead)
+    return notifications.value.some((n: AdminNotification) => n.isRead)
   })
 
   // Sync with props
@@ -110,7 +110,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       })
 
       if (response.ok) {
-        const notification = notifications.value.find((n) => n.id === id)
+        const notification = notifications.value.find((n: AdminNotification) => n.id === id)
         if (notification && !notification.isRead) {
           notification.isRead = true
           notification.readAt = new Date().toISOString()
@@ -137,7 +137,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       })
 
       if (response.ok) {
-        notifications.value.forEach((n) => {
+        notifications.value.forEach((n: AdminNotification) => {
           if (!n.isRead) {
             n.isRead = true
             n.readAt = new Date().toISOString()
@@ -165,7 +165,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       })
 
       if (response.ok) {
-        const index = notifications.value.findIndex((n) => n.id === id)
+        const index = notifications.value.findIndex((n: AdminNotification) => n.id === id)
         if (index !== -1) {
           const notification = notifications.value[index]
           if (!notification.isRead) {
@@ -194,7 +194,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       })
 
       if (response.ok) {
-        notifications.value = notifications.value.filter((n) => !n.isRead)
+        notifications.value = notifications.value.filter((n: AdminNotification) => !n.isRead)
         return true
       }
       return false

@@ -4,7 +4,7 @@
  */
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useToast } from '~/composables/use_toast'
+import { useToast } from './use_toast.js'
 import type {
   Customer,
   CustomerPaginatedResponse,
@@ -12,7 +12,7 @@ import type {
   CustomerStats,
   CustomerDeleteState,
   CustomerStatusOption,
-} from '~/components/admin/customers'
+} from '../components/admin/customers/types.js'
 
 export interface UseCustomerManagementConfig {
   initialData: CustomerPaginatedResponse

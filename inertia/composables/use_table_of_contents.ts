@@ -1,5 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
-import type { TOCItem } from '~/types/article'
+import type { TOCItem } from '../types/article.js'
 
 /**
  * Composable for Table of Contents navigation with active heading tracking
@@ -9,9 +9,11 @@ export function useTableOfContents() {
   let observer: IntersectionObserver | null = null
 
   const initObserver = () => {
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+    if (typeof globalThis.IntersectionObserver === 'undefined') return
+
+    observer = new globalThis.IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        entries.forEach((entry: IntersectionObserverEntry) => {
           if (entry.isIntersecting) {
             activeHeadingId.value = entry.target.id
           }
@@ -22,10 +24,11 @@ export function useTableOfContents() {
 
     // Observe all headings after a brief delay for render
     setTimeout(() => {
-      const contentEl = document.querySelector('.article-content')
+      if (typeof globalThis.document === 'undefined') return
+      const contentEl = globalThis.document.querySelector('.article-content')
       if (contentEl) {
         const headings = contentEl.querySelectorAll('h1, h2, h3, h4')
-        headings.forEach((heading) => {
+        headings.forEach((heading: Element) => {
           if (heading.id) observer?.observe(heading)
         })
       }
@@ -33,7 +36,8 @@ export function useTableOfContents() {
   }
 
   const scrollToHeading = (id: string) => {
-    const element = document.getElementById(id)
+    if (typeof globalThis.document === 'undefined') return
+    const element = globalThis.document.getElementById(id)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       activeHeadingId.value = id
