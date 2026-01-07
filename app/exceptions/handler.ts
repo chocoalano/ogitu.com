@@ -46,10 +46,71 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   }
 
   /**
+   * Check if request expects JSON response
+   */
+  private isJsonRequest(ctx: HttpContext): boolean {
+    const acceptHeader = ctx.request.header('accept') || ''
+    const contentType = ctx.request.header('content-type') || ''
+    const xRequestedWith = ctx.request.header('x-requested-with') || ''
+
+    return (
+      acceptHeader.includes('application/json') ||
+      contentType.includes('application/json') ||
+      xRequestedWith.toLowerCase() === 'xmlhttprequest'
+    )
+  }
+
+  /**
    * The method is used for handling errors and returning
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    // For JSON/API requests, always return JSON response
+    if (this.isJsonRequest(ctx)) {
+      const err = error as Error & { status?: number; code?: string }
+      const status = err.status || 500
+      const message = err.message || 'Terjadi kesalahan pada server'
+
+      // Handle specific error codes
+      if (err.code === 'E_INVALID_CSRF_TOKEN') {
+        return ctx.response.status(403).json({
+          success: false,
+          message: 'Session telah berakhir. Silakan refresh halaman dan coba lagi.',
+          code: 'CSRF_ERROR',
+        })
+      }
+
+      if (err.code === 'E_UNAUTHORIZED_ACCESS') {
+        return ctx.response.status(401).json({
+          success: false,
+          message: 'Anda harus login terlebih dahulu',
+          code: 'UNAUTHORIZED',
+        })
+      }
+
+      if (err.code === 'E_VALIDATION_ERROR') {
+        return ctx.response.status(422).json({
+          success: false,
+          message: message,
+          code: 'VALIDATION_ERROR',
+        })
+      }
+
+      if (err.code === 'E_TOO_MANY_REQUESTS') {
+        return ctx.response.status(429).json({
+          success: false,
+          message: 'Terlalu banyak permintaan. Silakan tunggu beberapa saat.',
+          code: 'RATE_LIMITED',
+        })
+      }
+
+      return ctx.response.status(status).json({
+        success: false,
+        message: app.inProduction ? 'Terjadi kesalahan pada server' : message,
+        code: err.code || 'SERVER_ERROR',
+      })
+    }
+
     return super.handle(error, ctx)
   }
 
