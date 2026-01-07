@@ -1,0 +1,1 @@
+{"version":3,"file":"nuxt_ui.config.js","sourceRoot":"","sources":["../../inertia/nuxt_ui.config.ts"],"names":[],"mappings":"AAAA,eAAe;IACb,EAAE,EAAE;QACF,MAAM,EAAE;YACN,OAAO,EAAE,QAAQ;SAClB;QACD,MAAM,EAAE;YACN,KAAK,EAAE;gBACL,MAAM,EAAE,qCAAqC;aAC9C;SACF;KACF;IACD,KAAK,EAAE;QACL,OAAO,EAAE,IAAI;KACd;CACF,CAAA"}

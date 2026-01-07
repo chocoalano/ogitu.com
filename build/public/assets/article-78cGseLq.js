@@ -1,0 +1,1 @@
+const e={tips:"primary",review:"success",news:"info",guide:"warning",promo:"error"};function i(r){return r?new Date(r).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}):""}function n(r){return r>=1e6?`${(r/1e6).toFixed(1)}M`:r>=1e3?`${(r/1e3).toFixed(1)}K`:r.toString()}export{e as C,n as a,i as f};
